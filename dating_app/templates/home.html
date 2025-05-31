@@ -1,13 +1,65 @@
 {% extends "base.html" %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Find Your Spark{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>Welcome to the Dating App!</h1>
-    <p>Find your match today.</p>
-    {% if not current_user.is_authenticated %}
-    <p><a href="{{ url_for('register') }}">Register</a> or <a href="{{ url_for('login') }}">Login</a> to get started.</p>
-    {% endif %}
+<!-- Hero Section: Main welcome area -->
+<section class="hero-section">
+    <div class="container hero-content">
+        <h1 class="hero-title">Discover Connections That Spark.</h1>
+        <p class="hero-subtitle">Join SparkConnect, the place to meet authentic people and build meaningful relationships.</p>
+        {% if not current_user.is_authenticated %}
+        <div class="hero-actions">
+            <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">Join Now</a>
+            <a href="{{ url_for('login') }}" class="btn btn-secondary btn-lg">Log In</a>
+        </div>
+        {% else %}
+        <div class="hero-actions">
+             <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg">Go to Dashboard</a>
+        </div>
+        {% endif %}
+        {# Placeholder for a future graphic or illustration #}
+        {# <img src="{{ url_for('static', filename='images/hero_graphic.svg') }}" alt="People connecting" class="hero-graphic"> #}
+    </div>
+</section>
+<!-- End Hero Section -->
+
+<!-- Features Section: Highlights key benefits -->
+<section class="features-section">
+    <div class="container">
+        <h2 class="section-title">Why SparkConnect?</h2>
+        <div class="features-grid">
+            <div class="feature-item">
+                {# <img src="{{ url_for('static', filename='images/icon_authentic.svg') }}" alt="Authentic Profiles Icon" class="feature-icon"> #}
+                <div class="feature-icon-placeholder">ICON1</div>
+                <h3 class="feature-title">Authentic Profiles</h3>
+                <p class="feature-description">Connect with real people looking for genuine interactions.</p>
+            </div>
+            <div class="feature-item">
+                {# <img src="{{ url_for('static', filename='images/icon_match.svg') }}" alt="Smart Matching Icon" class="feature-icon"> #}
+                <div class="feature-icon-placeholder">ICON2</div>
+                <h3 class="feature-title">Smart Matching</h3>
+                <p class="feature-description">Our algorithm helps you find compatible matches based on your interests.</p>
+            </div>
+            <div class="feature-item">
+                {# <img src="{{ url_for('static', filename='images/icon_safe.svg') }}" alt="Safe & Secure Icon" class="feature-icon"> #}
+                <div class="feature-icon-placeholder">ICON3</div>
+                <h3 class="feature-title">Safe & Secure</h3>
+                <p class="feature-description">Your privacy and safety are our top priorities.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# Flashed messages container for general messages on home if any (e.g. after logout) #}
+<div class="container flashes-container-standalone">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 </div>
+
 {% endblock %}

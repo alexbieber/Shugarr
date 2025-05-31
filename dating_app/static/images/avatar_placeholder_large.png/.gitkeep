@@ -1,0 +1,5 @@
+# This is a placeholder for avatar_placeholder_large.png
+# In a real scenario, this would be an actual image file.
+# For now, this .gitkeep file ensures the path can be referenced
+# without causing a "file not found" if the image is missing during dev.
+# Dimensions might be around 200x200px or 250x250px for a large avatar.

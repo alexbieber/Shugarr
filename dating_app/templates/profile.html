@@ -3,44 +3,67 @@
 {% block title %}{{ user.username }}'s Profile{% endblock %}
 
 {% block content %}
-<div class="container profile-container">
-    <h2>{{ user.username }}</h2>
+<!-- Profile Section: Displays user profile details -->
+<section class="profile-section">
+    <div class="container profile-container-main">
+        {# Flashed messages for profile page specifically #}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flashes-container">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
 
-    <div class="profile-info">
-        <p><strong>Email:</strong> {{ user.email }}</p>
-        <p><strong>Bio:</strong></p>
-        <div class="bio-text">
-            {{ user.bio if user.bio else "No bio yet." }}
-        </div>
+        <article class="profile-card">
+            <!-- Profile Card: Main container for profile information -->
+            <header class="profile-header">
+                <div class="profile-avatar-large">
+                    <!-- Placeholder for profile picture -->
+                    <img src="{{ url_for('static', filename='images/avatar_placeholder_large.png') }}" alt="{{ user.username }}'s avatar" class="avatar-img-large">
+                </div>
+                <div class="profile-header-info">
+                    <h1 class="profile-username">{{ user.username }}</h1>
+                    {# Could add other quick info here, e.g., age, location if available #}
+                    {% if current_user == user %}
+                        <a href="{{ url_for('edit_profile') }}" class="btn btn-secondary btn-sm profile-edit-button">Edit Profile</a>
+                    {% else %}
+                        <!-- Placeholder for future actions like "Send Message" or "Add Friend" -->
+                        {# <button class="btn btn-primary btn-sm">Connect</button> #}
+                    {% endif %}
+                </div>
+            </header>
+
+            <!-- Bio Section -->
+            <section class="profile-bio">
+                <h2 class="profile-section-title">About Me</h2>
+                <p class="bio-text-content">
+                    {{ user.bio if user.bio else "This user hasn't shared much about themselves yet." }}
+                </p>
+            </section>
+
+            <!-- End Bio Section -->
+
+            <!-- Details Section: Other user information -->
+            <section class="profile-details">
+                <h2 class="profile-section-title">Details</h2>
+                <ul class="details-list">
+                    <li><strong>Email:</strong> {{ user.email }}</li> {# Consider privacy implications for showing email publicly #}
+                    <!-- Add more details here as they are added to the User model, e.g., Interests, Location etc. -->
+                    {# <li><strong>Joined:</strong> {{ user.join_date.strftime('%B %Y') if user.join_date }}</li> #}
+                </ul>
+            </section>
+            <!-- End Details Section -->
+
+            <footer class="profile-card-footer">
+                 <a href="{{ url_for('users') }}" class="link-subtle">Back to User List</a>
+            </footer>
+        </article>
+        <!-- End Profile Card -->
     </div>
-
-    {% if current_user == user %}
-        <a href="{{ url_for('edit_profile') }}" class="btn btn-primary">Edit Profile</a>
-    {% endif %}
-    {# Add a link to go back to users list or home #}
-    <p><a href="{{ url_for('users') }}">Back to Users List</a></p>
-</div>
-
-<style>
-    .profile-container { max-width: 700px; }
-    .profile-info { margin-bottom: 20px; }
-    .bio-text {
-        background-color: #f9f9f9;
-        border: 1px solid #eee;
-        padding: 10px;
-        border-radius: 4px;
-        min-height: 50px;
-        white-space: pre-wrap; /* Respects newlines and spaces in the bio */
-    }
-    .btn.btn-primary {
-        display: inline-block;
-        margin-top: 10px;
-        background-color: #007bff;
-        color: white;
-        padding: 10px 15px;
-        text-decoration: none;
-        border-radius: 4px;
-    }
-    .btn.btn-primary:hover { background-color: #0056b3; }
-</style>
+</section>
+<!-- End Profile Section -->
+{# Removed inline styles, will be in style.css #}
 {% endblock %}

@@ -3,47 +3,52 @@
 {% block title %}Browse Users{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h2>All Users</h2>
-    {% if users %}
-        <ul class="user-list">
-            {% for user_item in users %}
-                <li class="user-list-item">
-                    <a href="{{ url_for('user_profile', username=user_item.username) }}">{{ user_item.username }}</a>
-                    <p class="user-email">{{ user_item.email }}</p> {# Displaying email, consider privacy implications #}
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No users found.</p>
-    {% endif %}
-</div>
+<!-- User Listing Section -->
+<section class="users-section">
+    <div class="container">
+        <h1 class="section-title-centered">Meet Our Community</h1>
+        <p class="section-subtitle-centered">Discover profiles of amazing people on SparkConnect.</p>
 
-<style>
-    .user-list {
-        list-style-type: none;
-        padding: 0;
-    }
-    .user-list-item {
-        background-color: #f9f9f9;
-        border: 1px solid #eee;
-        padding: 15px;
-        margin-bottom: 10px;
-        border-radius: 5px;
-    }
-    .user-list-item a {
-        font-size: 1.2em;
-        color: #007bff;
-        text-decoration: none;
-        font-weight: bold;
-    }
-    .user-list-item a:hover {
-        text-decoration: underline;
-    }
-    .user-email {
-        font-size: 0.9em;
-        color: #555;
-        margin-top: 5px;
-    }
-</style>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flashes-container">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% if users %}
+            <div class="user-grid">
+                {# Loop through each user and render their card #}
+                {% for user_item in users %}
+                <article class="user-card">
+                    <a href="{{ url_for('user_profile', username=user_item.username) }}" class="user-card-link" aria-label="View {{ user_item.username }}'s profile">
+                        <div class="user-card-avatar">
+                            <!-- Placeholder for small avatar -->
+                            <img src="{{ url_for('static', filename='images/avatar_placeholder_small.png') }}" alt="{{ user_item.username }}'s avatar" class="avatar-img-small">
+                        </div>
+                        <div class="user-card-info">
+                            <h2 class="user-card-username">{{ user_item.username }}</h2>
+                            {% if user_item.bio %}
+                                <p class="user-card-bio-snippet">{{ user_item.bio | truncate(80, True) }}</p> {# Truncates bio to 80 chars, adds ellipsis if longer #}
+                            {% else %}
+                                <p class="user-card-bio-snippet">No bio yet.</p>
+                            {% endif %}
+                        </div>
+                    </a>
+                </article>
+                {% endfor %}
+                {# End user loop #}
+            </div>
+        {% else %}
+            <div class="no-users-found">
+                <p>No users found at the moment. Be the first to join the community!</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+<!-- End User Listing Section -->
+{# Removed inline styles, will be in style.css #}
 {% endblock %}

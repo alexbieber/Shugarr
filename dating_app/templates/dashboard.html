@@ -3,9 +3,49 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h2>Dashboard</h2>
-    <p>Hello, {{ current_user.username }}!</p>
-    <p>This is your dashboard. More features coming soon.</p>
-</div>
+<!-- Dashboard Section: Main content area for logged-in users -->
+<section class="dashboard-section">
+    <div class="container">
+        <h1 class="section-title">Your Dashboard</h1>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flashes-container">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="dashboard-welcome">
+            <p>Hello, <strong>{{ current_user.username }}</strong>!</p>
+            <p>Welcome back to SparkConnect. Here's a quick overview of your activity (more features coming soon!):</p>
+        </div>
+
+        <!-- Grid for dashboard cards/widgets -->
+        <div class="dashboard-grid">
+            <article class="dashboard-card">
+                <h2 class="dashboard-card-title">My Profile</h2>
+                <p class="dashboard-card-content">Review and update your personal information.</p>
+                <a href="{{ url_for('profile') }}" class="btn btn-secondary">View My Profile</a>
+            </article>
+
+            <article class="dashboard-card">
+                <h2 class="dashboard-card-title">Browse Matches</h2>
+                <p class="dashboard-card-content">Discover other users in the community.</p>
+                <a href="{{ url_for('users') }}" class="btn btn-secondary">Find People</a>
+            </article>
+
+            <!-- Placeholder card for a future feature -->
+            <article class="dashboard-card placeholder-card">
+                <h2 class="dashboard-card-title">Messages</h2>
+                <p class="dashboard-card-content">Your conversations will appear here.</p>
+                <button class="btn btn-secondary" disabled>View Messages (Soon)</button>
+            </article>
+        </div>
+        <!-- End Dashboard Grid -->
+    </div>
+</section>
+<!-- End Dashboard Section -->
 {% endblock %}

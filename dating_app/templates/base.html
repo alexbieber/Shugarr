@@ -1,75 +1,69 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Dating App{% endblock %}</title>
+    <title>{% block title %}SparkConnect{% endblock %} - Find Your Spark</title> {# Consistent app name, then specific page title #}
+
+    <!-- Google Fonts Import - As per STYLE_GUIDE.md -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Main Stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <style>
-        body { font-family: sans-serif; margin: 0; background-color: #f4f4f4; color: #333; }
-        nav { background-color: #007bff; padding: 10px 20px; color: white; }
-        nav a { color: white; margin: 0 10px; text-decoration: none; }
-        nav a:hover { text-decoration: underline; }
-        .nav-right { float: right; }
-        .container { max-width: 960px; margin: 20px auto; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .alert { padding: 10px; margin-bottom: 15px; border-radius: 4px; }
-        .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .alert-danger { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .alert-info { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
 
-        /* Form Styles from register.html - can be moved to style.css */
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input[type="text"], input[type="email"], input[type="password"], input[type="submit"], .form-control {
-            width: calc(100% - 22px); /* Adjusted for padding and border */
-            padding: 10px;
-            margin-bottom: 5px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box; /* Important for width calculation */
-        }
-        .errors { color: red; font-size: 0.9em; list-style-type: none; padding-left: 0; }
-        .errors li { margin-bottom: 5px;}
-        input[type="submit"], .btn-primary {
-            background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%; font-size: 16px;
-        }
-        input[type="submit"]:hover, .btn-primary:hover { background-color: #0056b3; }
-        .form-check-input { width: auto; margin-right: 5px;} /* For checkbox */
-        .form-check-label { font-weight: normal; }
-        .register-link, .login-link { text-align: center; margin-top: 15px; }
-        .register-link a, .login-link a { color: #007bff; text-decoration: none; }
-        .register-link a:hover, .login-link a:hover { text-decoration: underline; }
-        h2 { text-align: center; color: #333; }
-
-    </style>
+    {% block head_extra %}{% endblock %} {# For page-specific head elements like additional CSS #}
 </head>
 <body>
-    <nav>
-        <a href="{{ url_for('home') }}">Home</a>
-        <div class="nav-right">
-            {% if current_user.is_authenticated %}
-                <a href="{{ url_for('dashboard') }}">Dashboard</a>
-                <a href="{{ url_for('profile') }}">My Profile</a>
-                <a href="{{ url_for('users') }}">Browse Users</a>
-                <a href="{{ url_for('logout') }}">Logout</a>
-            {% else %}
-                <a href="{{ url_for('login') }}">Login</a>
-                <a href="{{ url_for('register') }}">Register</a>
-            {% endif %}
-        </div>
-    </nav>
+    <!-- Site Header: Contains main navigation -->
+    <header class="site-header">
+        <nav class="main-nav container" aria-label="Main Navigation">
+            <a href="{{ url_for('home') }}" class="nav-logo">
+                <!-- Placeholder for SVG Logo or Text Logo. For now, an img placeholder -->
+                <img src="{{ url_for('static', filename='images/logo_placeholder.png') }}" alt="SparkConnect Logo" style="height: 40px;">
+            </a>
 
-    <div class="container">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+            <!-- Desktop Navigation Links -->
+            <div class="nav-links" id="main-nav-links"> {# Added ID for easier JS targeting if needed #}
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('dashboard') }}">Dashboard</a>
+                    <a href="{{ url_for('profile') }}">My Profile</a>
+                    <a href="{{ url_for('users') }}">Browse Users</a>
+                    <a href="{{ url_for('logout') }}" class="nav-button nav-button-logout">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}">Login</a>
+                    <a href="{{ url_for('register') }}" class="nav-button nav-button-register">Register</a>
+                {% endif %}
+            </div>
+
+            <!-- Mobile Navigation Toggle Button -->
+            <button class="nav-mobile-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="main-nav-links">
+                <span></span> {# Hamburger icon lines #}
+                <span></span>
+                <span></span>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Main Content Area: Page-specific content will be injected here -->
+    <main class="main-content">
         {% block content %}{% endblock %}
-    </div>
+    </main>
 
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <!-- Site Footer: Copyright and optional links -->
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; {% block year %}{{ SCRIPT_INFO.timestamp.year if SCRIPT_INFO and SCRIPT_INFO.timestamp else '2024' }}{% endblock %} SparkConnect. All rights reserved.</p>
+            <!-- Example: <a href="{{ url_for('privacy_policy') }}">Privacy Policy</a> | <a href="{{ url_for('terms_of_service') }}">Terms of Service</a> -->
+        </div>
+    </footer>
+
+    <!-- Core JavaScript - Deferred for performance -->
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+
+    <!-- Block for page-specific JavaScript files -->
+    {% block scripts %}{% endblock %}
 </body>
 </html>
