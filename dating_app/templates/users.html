@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Browse Users{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>All Users</h2>
+    {% if users %}
+        <ul class="user-list">
+            {% for user_item in users %}
+                <li class="user-list-item">
+                    <a href="{{ url_for('user_profile', username=user_item.username) }}">{{ user_item.username }}</a>
+                    <p class="user-email">{{ user_item.email }}</p> {# Displaying email, consider privacy implications #}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No users found.</p>
+    {% endif %}
+</div>
+
+<style>
+    .user-list {
+        list-style-type: none;
+        padding: 0;
+    }
+    .user-list-item {
+        background-color: #f9f9f9;
+        border: 1px solid #eee;
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+    }
+    .user-list-item a {
+        font-size: 1.2em;
+        color: #007bff;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    .user-list-item a:hover {
+        text-decoration: underline;
+    }
+    .user-email {
+        font-size: 0.9em;
+        color: #555;
+        margin-top: 5px;
+    }
+</style>
+{% endblock %}
