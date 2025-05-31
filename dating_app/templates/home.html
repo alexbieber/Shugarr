@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Welcome to the Dating App!</h1>
+    <p>Find your match today.</p>
+    {% if not current_user.is_authenticated %}
+    <p><a href="{{ url_for('register') }}">Register</a> or <a href="{{ url_for('login') }}">Login</a> to get started.</p>
+    {% endif %}
+</div>
+{% endblock %}

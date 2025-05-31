@@ -1,0 +1,125 @@
+from flask import Flask, render_template, redirect, url_for, flash, request
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+
+import config  # Import the config file
+from forms import RegistrationForm, LoginForm, EditProfileForm # Import forms
+from models import db, User  # Import db and User from models.py
+from flask import abort # For 404 errors
+
+app = Flask(__name__, instance_relative_config=True)
+
+# Load configuration from config.py
+app.config.from_object(config)
+# Load instance-specific config if it exists
+app.config.from_pyfile('config.py', silent=True)
+app.config.setdefault('SECRET_KEY', 'dev_secret_key_for_flask_wtf_and_sessions')
+
+# Initialize SQLAlchemy
+db.init_app(app)
+
+# Initialize Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login' # Where to redirect if @login_required is hit
+login_manager.login_message_category = 'info' # Flash message category
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+@app.route('/')
+def home():
+    return render_template('home.html', title='Home')
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard'))
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        hashed_password = generate_password_hash(form.password.data, method='pbkdf2:sha256')
+        new_user = User(username=form.username.data,
+                        email=form.email.data,
+                        password_hash=hashed_password)
+        db.session.add(new_user)
+        try:
+            db.session.commit()
+            flash('Your account has been created! You can now log in.', 'success')
+            return redirect(url_for('login'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error creating account: {e}', 'danger')
+            app.logger.error(f"Error creating account: {e}") # Log the error
+    return render_template('register.html', title='Register', form=form)
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user and check_password_hash(user.password_hash, form.password.data):
+            login_user(user, remember=form.remember_me.data)
+            flash('Login successful!', 'success')
+            next_page = request.args.get('next') # For redirecting after login if @login_required was hit
+            return redirect(next_page or url_for('dashboard'))
+        else:
+            flash('Login Unsuccessful. Please check email and password.', 'danger')
+    return render_template('login.html', title='Login', form=form)
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('You have been logged out.', 'info')
+    return redirect(url_for('home'))
+
+@app.route('/dashboard')
+@login_required
+def dashboard():
+    return render_template('dashboard.html', title='Dashboard')
+
+@app.route('/profile')
+@login_required
+def profile():
+    # Form is for editing, which will be a separate route/handler
+    # form = EditProfileForm(obj=current_user)
+    return render_template('profile.html', title='My Profile', user=current_user)
+
+@app.route('/user/<username>')
+@login_required # Optional: remove if profiles should be public
+def user_profile(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    # user = User.query.filter_by(username=username).first()
+    # if user is None:
+    #     abort(404) # Ensure you import abort from flask
+    return render_template('profile.html', title=f"{user.username}'s Profile", user=user)
+
+@app.route('/users')
+@login_required # Optional: consider if this list should be public or require login
+def users():
+    all_users = User.query.all()
+    return render_template('users.html', title='Browse Users', users=all_users)
+
+# Placeholder for edit_profile route - to be implemented in a future subtask
+@app.route('/edit_profile', methods=['GET', 'POST'])
+@login_required
+def edit_profile():
+    form = EditProfileForm(obj=current_user)
+    if form.validate_on_submit():
+        # In a real implementation, you'd update current_user here
+        # current_user.username = form.username.data # if allowing username changes
+        # current_user.bio = form.bio.data
+        # db.session.commit()
+        flash('Profile updated (not really, this is a placeholder).', 'info')
+        return redirect(url_for('profile'))
+    return render_template('edit_profile.html', title='Edit Profile', form=form)
+
+
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()  # Create database tables if they don't exist
+    app.run(debug=True)
