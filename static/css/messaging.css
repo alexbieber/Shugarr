@@ -1,0 +1,188 @@
+/* static/css/messaging.css */
+
+/* --- General Messaging Container --- */
+.messaging-container, .chat-container {
+    /* Using Bootstrap's .container class primarily, these are for specific overrides */
+    background-color: var(--background-color, #fff);
+    padding: 1.5rem;
+    border-radius: 0.3rem; /* Bootstrap's default card/alert radius */
+    box-shadow: var(--card-shadow, 0 2px 10px rgba(0,0,0,0.075));
+    margin-bottom: 2rem;
+}
+
+/* --- Conversation List (messages.html) --- */
+.conversation-list .list-group-item {
+    border-left-width: 4px; /* Thicker left border for emphasis */
+    border-left-color: transparent; /* Default state */
+    transition: background-color 0.15s ease-in-out, border-left-color 0.2s ease-in-out;
+    padding: 1rem 1.25rem;
+}
+
+.conversation-list .list-group-item:hover {
+    background-color: var(--light-color, #f8f9fa);
+    border-left-color: var(--secondary-color, #6c757d); /* Subtle hover indicator */
+}
+
+.conversation-list .list-group-item.list-group-item-primary { /* Unread conversation */
+    border-left-color: var(--primary-color, #007bff);
+    background-color: #e7f3ff; /* Very light blue for unread background */
+}
+.conversation-list .list-group-item.list-group-item-primary:hover {
+    background-color: #d0e7ff;
+}
+
+
+.conversation-list .list-group-item h5 {
+    font-size: 1.05rem; /* Slightly reduced from default h5 for compactness */
+    font-weight: 500; /* Match global H style */
+    color: var(--text-color);
+}
+
+.conversation-list .list-group-item p {
+    font-size: 0.9rem;
+    color: var(--text-muted-color, #6c757d);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 0.25rem; /* Reduce bottom margin */
+}
+
+.conversation-list .list-group-item small { /* Timestamp */
+    font-size: 0.8rem;
+    color: var(--text-muted-color);
+}
+
+.conversation-list .unread-indicator {
+    font-size: 0.7rem;
+    padding: 0.2em 0.5em;
+    /* Using Bootstrap badge styling, but can be customized */
+}
+
+
+/* --- Chat Interface (chat.html) --- */
+.chat-with-header {
+    border-bottom: 1px solid var(--border-color, #eee);
+    padding-bottom: 0.75rem;
+    margin-bottom: 1.5rem;
+    font-size: 1.4rem; /* Consistent with other page titles */
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.chat-area {
+    height: 450px; /* Increased height */
+    border: 1px solid var(--border-color, #ddd);
+    border-radius: 0.25rem; /* Standard border radius */
+    padding: 1rem;
+    overflow-y: auto;
+    background-color: var(--light-color, #f9f9f9);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem; /* Space between messages */
+}
+
+.message {
+    display: flex;
+    flex-direction: column;
+    max-width: 75%; /* Max width of a message group */
+}
+
+.message-bubble {
+    padding: 0.6rem 1rem; /* Adjusted padding */
+    border-radius: 1rem; /* More rounded bubbles */
+    line-height: 1.5;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.message-text {
+    margin-bottom: 0.25rem; /* Tighter spacing */
+    word-wrap: break-word;
+    font-size: 0.95rem; /* Slightly smaller for chat */
+}
+
+.message-timestamp {
+    font-size: 0.7rem; /* Smaller timestamp */
+    display: block;
+}
+
+/* Sent messages */
+.message.sent {
+    align-items: flex-end;
+}
+.message.sent .message-bubble {
+    background-color: var(--primary-color, #007bff);
+    color: white;
+    border-bottom-right-radius: 0.25rem; /* "Tail" effect */
+}
+.message.sent .message-timestamp {
+    color: rgba(255,255,255,0.7); /* Lighter timestamp for dark bubble */
+    text-align: right;
+}
+
+/* Received messages */
+.message.received {
+    align-items: flex-start;
+}
+.message.received .message-bubble {
+    background-color: var(--background-color, #e9ecef);
+    color: var(--text-color, #333);
+    border: 1px solid var(--border-color, #ddd);
+    border-bottom-left-radius: 0.25rem; /* "Tail" effect */
+}
+.message.received .message-timestamp {
+    color: var(--text-muted-color, #888);
+    text-align: left;
+}
+
+
+/* Chat Input Area */
+.chat-input-area {
+    margin-top: 1.5rem; /* Consistent spacing */
+    display: flex; /* Use flex for alignment */
+}
+
+.chat-input-area .form-control {
+    /* Inherits from style.css, specific overrides: */
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    flex-grow: 1; /* Allow input to take available space */
+    height: calc(1.5em + 1rem + 2px); /* Match Bootstrap's .btn padding + border */
+}
+
+.chat-input-area .btn {
+    /* Inherits from style.css, specific overrides: */
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+/* --- Responsive Adjustments for Messaging --- */
+@media (max-width: 768px) { /* md breakpoint */
+    .messaging-container, .chat-container {
+        padding: 1rem; /* Reduce padding on smaller screens */
+    }
+    .chat-area {
+        height: 350px; /* Reduce height */
+    }
+    .message {
+        max-width: 85%; /* Allow messages to be a bit wider */
+    }
+}
+
+@media (max-width: 576px) { /* sm breakpoint */
+    .chat-with-header {
+        font-size: 1.2rem;
+    }
+    .chat-area {
+        padding: 0.75rem;
+        height: 300px;
+    }
+    .message-bubble {
+        padding: 0.5rem 0.75rem;
+    }
+    .message-text {
+        font-size: 0.9rem;
+    }
+    .chat-input-area .form-control {
+        height: calc(1.5em + 0.8rem + 2px); /* Adjust for smaller buttons */
+    }
+}

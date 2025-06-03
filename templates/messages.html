@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}My Messages{% endblock %}
+
+{% block head_extra %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/messaging.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container messaging-container mt-4">
+    <h2>My Conversations</h2>
+    <!-- BACKEND_INTEGRATION:
+        The 'conversations' variable should be populated by the backend route (e.g., /messages).
+        It should be a list of conversation objects. Each object needs:
+        - recipient_id: The ID of the other user in the conversation.
+        - recipient_name: The display name of the other user.
+        - last_message: A snippet of the most recent message in the conversation.
+        - timestamp: A human-readable timestamp for the last message (e.g., "10:30 AM", "Yesterday", "Mon").
+        - unread: Boolean, true if there are unread messages from this recipient for the current_user.
+                  (Alternatively, an unread_count if you want to display a number).
+        The link for each conversation should point to url_for('chat', user_id=conversation.recipient_id).
+        If there are no conversations, the backend should pass an empty list, and the
+        '{% else %}' block below will display "You have no active conversations."
+    -->
+    {% set mock_conversations = conversations %} <!-- Assuming 'conversations' is passed from app.py -->
+
+    <div class="list-group conversation-list">
+        {% if mock_conversations %}
+            {% for conversation in mock_conversations %}
+            <a href="{{ url_for('chat', user_id=conversation.recipient_id, name=conversation.recipient_name) }}" class="list-group-item list-group-item-action {% if conversation.unread %}list-group-item-primary font-weight-bold{% else %}list-group-item-light{% endif %}">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1 conversation-recipient-name">{{ conversation.recipient_name }}</h5>
+                    <small class="text-muted conversation-timestamp">{{ conversation.timestamp }}</small>
+                </div>
+                <p class="mb-1 last-message-snippet text-muted">{{ conversation.last_message | truncate(70) }}</p>
+                {% if conversation.unread %}
+                    <span class="badge badge-primary badge-pill unread-indicator">New Messages</span>
+                {% endif %}
+            </a>
+            {% endfor %}
+        {% else %}
+            <p>You have no active conversations.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
