@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Chat with {{ recipient_name or 'User' }}{% endblock %}
+
+{% block head_extra %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/messaging.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container chat-container mt-4">
+    <!--
+        BACKEND_INTEGRATION (Chat Page - GET Request):
+        - The backend route for this page (e.g., /chat/<user_id>) should determine:
+            1. `recipient_name`: The name of the user being chatted with.
+            2. `recipient_id`: The ID of the user being chatted with (passed to JS).
+        - Initial chat messages are loaded by static/js/chat.js via an API call.
+          See static/js/chat.js for details on the expected API for fetching history.
+        - The route should also mark messages as 'read' if this chat window is opened by the recipient
+          of unread messages.
+    -->
+    <h2 class="chat-with-header">Chat with <span id="recipientNameDynamic">{{ recipient_name or 'User' }}</span></h2>
+
+    <div class="chat-area" id="chatArea">
+        <!--
+            BACKEND_INTEGRATION (Message Display):
+            Messages are loaded and displayed here by static/js/chat.js.
+            Each message object in JavaScript (fetched from backend) should ideally include:
+            - id: Message ID
+            - sender_id: ID of the sender (or a flag like 'is_current_user': true/false)
+            - text: The message content.
+            - timestamp: Formatted timestamp string.
+            The JavaScript then styles them as 'sent' or 'received'.
+        -->
+        <!-- Placeholder messages are cleared by chat.js if actual messages are loaded -->
+        <div class="message received">
+            <div class="message-bubble">
+                <p class="message-text">Loading messages...</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-input-area mt-3">
+        <!--
+            BACKEND_INTEGRATION (Sending Messages):
+            Message sending is handled by static/js/chat.js. When the "Send" button is clicked,
+            the script will make an API call (e.g., POST to /api/send_message) with the
+            recipient's ID and the message text. See static/js/chat.js for details.
+        -->
+        <div class="input-group">
+            <input type="text" id="messageInput" class="form-control" placeholder="Type your message...">
+            <div class="input-group-append">
+                <button id="sendMessageButton" class="btn btn-primary" type="button"> <!-- Added type="button" -->
+                    <i class="fas fa-paper-plane"></i> Send
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Pass recipient data to JavaScript
+    const chatWithRecipientId = {{ recipient_id | tojson }};
+    const chatWithRecipientName = {{ recipient_name | tojson }};
+</script>
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+{% endblock %}

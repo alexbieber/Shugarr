@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Swipe Profiles{% endblock %}
+
+{% block head_extra %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/swipe.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container swipe-container mt-4">
+    <!-- BACKEND_INTEGRATION:
+        Profile cards are dynamically loaded and swipe actions (like/nope) are primarily handled by JavaScript
+        in static/js/swipe.js. That file contains detailed comments for backend API endpoints
+        to fetch profiles and record swipe actions.
+        This HTML structure provides the basic layout for the swipe card and action buttons.
+        The initial profile card visible on load is a template; its content is immediately
+        replaced by JavaScript using data from the first profile in its dataset.
+    -->
+    <div id="swipe-area" class="swipe-area">
+        <!-- Profile cards will be loaded here by JavaScript -->
+        <div class="profile-card" id="profileCard">
+            <div class="profile-card-image-container">
+                <img src="{{ url_for('static', filename='images/default_profile.png') }}" alt="Profile Picture" id="profileImage" class="profile-card-image">
+            </div>
+            <div class="profile-card-info">
+                <h3 id="profileName">Name</h3>
+                <p><span id="profileAge">Age</span> years old</p>
+                <p id="profileBio">Bio will appear here.</p>
+            </div>
+        </div>
+        <div id="noMoreProfiles" class="no-more-profiles-message" style="display: none;">
+            <p>No more profiles to show right now. Check back later!</p>
+            <!-- BACKEND_INTEGRATION: Fetch new profiles when current batch is low. -->
+        </div>
+    </div>
+
+    <div class="swipe-actions text-center mt-3">
+        <button id="nopeButton" class="btn btn-danger btn-lg swipe-button">Nope</button>
+        <button id="likeButton" class="btn btn-success btn-lg swipe-button">Like</button>
+    </div>
+</div>
+
+<!-- BACKEND_INTEGRATION: This script will handle swipe logic and mock data for now. -->
+<!-- In a full app, data would come from the backend. -->
+<script src="{{ url_for('static', filename='js/swipe.js') }}"></script>
+{% endblock %}

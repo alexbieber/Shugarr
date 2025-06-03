@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+    <h1 class="display-4">Welcome to MyApp!</h1>
+    <p class="lead">This is a simple application to demonstrate various features, including user profiles and a swipe interface.</p>
+    <hr class="my-4">
+    {% if not current_user.is_authenticated %}
+    <p>Please log in or register to continue.</p>
+    <a class="btn btn-primary btn-lg" href="{{ url_for('login') }}" role="button">Login</a>
+    <a class="btn btn-secondary btn-lg" href="{{ url_for('register') }}" role="button">Register</a>
+    {% else %}
+    <p>Explore the application using the navigation bar.</p>
+    <a class="btn btn-info btn-lg" href="{{ url_for('swipe') }}" role="button">Start Swiping</a>
+    {% endif %}
+</div>
+{% endblock %}

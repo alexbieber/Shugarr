@@ -1,0 +1,173 @@
+/* static/css/swipe.css */
+
+.swipe-container {
+    max-width: 420px; /* Max width of the swipe area, slightly increased */
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.swipe-area {
+    position: relative;
+    width: 100%;
+    /* Aspect ratio for the card area, e.g., 3:4 or 4:5. Adjust height based on width. */
+    /* Height will be controlled by .profile-card's aspect-ratio or min-height */
+    min-height: 480px; /* Minimum height for the swipe area */
+    background-color: var(--light-color, #f0f0f0);
+    border-radius: 15px; /* Softer radius */
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: var(--card-shadow, 0 4px 12px rgba(0,0,0,0.1));
+}
+
+.profile-card {
+    background-color: var(--background-color, #fff);
+    border-radius: 15px; /* Match swipe-area */
+    box-shadow: var(--card-shadow, 0 2px 10px rgba(0,0,0,0.15));
+    width: calc(100% - 20px); /* Slightly smaller than swipe-area with padding */
+    max-width: 380px;
+    min-height: 450px; /* Ensure card has a decent height */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease-out;
+    position: absolute; /* Important for stacking and animation */
+    border: 1px solid var(--border-color, #dee2e6);
+}
+
+.profile-card-image-container {
+    width: 100%;
+    /* Using aspect-ratio for responsive height, fallback to height */
+    aspect-ratio: 1 / 1; /* Square image container */
+    max-height: 300px; /* Max height for the image part */
+    overflow: hidden;
+    background-color: #e9ecef; /* Placeholder bg for image */
+}
+
+.profile-card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.profile-card-info {
+    padding: 1rem; /* Consistent padding */
+    text-align: left;
+    flex-grow: 1; /* Takes remaining space */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.profile-card-info h3 {
+    margin-top: 0;
+    margin-bottom: 0.25rem; /* Tighter spacing */
+    font-size: 1.6rem; /* Slightly larger name */
+    color: var(--text-color, #333);
+    font-weight: 600;
+}
+
+.profile-card-info p {
+    margin-bottom: 0.5rem; /* Consistent spacing */
+    font-size: 1rem;
+    color: var(--text-muted-color, #555);
+    line-height: 1.5;
+}
+.profile-card-info p:last-child {
+    margin-bottom: 0;
+}
+
+/* Swipe Animations */
+.animate-swipe-left {
+    transform: translateX(-150%) rotate(-20deg); /* More pronounced rotation */
+    opacity: 0;
+}
+
+.animate-swipe-right {
+    transform: translateX(150%) rotate(20deg); /* More pronounced rotation */
+    opacity: 0;
+}
+
+.swipe-actions {
+    padding: 1rem 0; /* Consistent padding */
+    display: flex; /* Use flex for button distribution */
+    justify-content: space-around; /* Evenly space buttons */
+    align-items: center;
+}
+
+.swipe-button {
+    /* Inherits .btn styles from style.css */
+    /* Specific overrides for swipe buttons if needed */
+    border-radius: 50%; /* Circular buttons */
+    width: 70px;       /* Fixed width */
+    height: 70px;      /* Fixed height */
+    font-size: 1.8rem; /* Larger icons if using them, or text */
+    padding: 0;        /* Reset padding if using fixed size and centering content */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+.swipe-button .fas { /* If using Font Awesome icons */
+    margin-right: 0; /* Remove margin if only icon */
+}
+
+
+/* Specific button colors are handled by .btn-success, .btn-danger in style.css */
+
+.no-more-profiles-message {
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.1rem;
+    color: var(--text-muted-color, #777);
+}
+
+.swipe-button:disabled {
+    opacity: 0.5; /* Standard disabled opacity */
+    cursor: not-allowed;
+}
+
+/* Responsive adjustments for swipe interface */
+@media (max-width: 576px) {
+    .swipe-container {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+    .swipe-area {
+        min-height: 420px; /* Adjust height for smaller screens */
+    }
+    .profile-card {
+        min-height: 400px;
+        width: calc(100% - 10px); /* More width on small screens */
+    }
+    .profile-card-image-container {
+        max-height: 250px; /* Smaller image on small screens */
+    }
+    .profile-card-info h3 {
+        font-size: 1.4rem;
+    }
+    .profile-card-info p {
+        font-size: 0.9rem;
+    }
+    .swipe-button {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .swipe-area {
+        min-height: 380px;
+    }
+    .profile-card {
+        min-height: 360px;
+    }
+     .profile-card-image-container {
+        max-height: 200px;
+    }
+}
