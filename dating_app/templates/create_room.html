@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Create a New Room</h2>
+    <form method="POST">
+        <div class="form-group">
+            <label for="room_name">Room Name</label>
+            <input type="text" class="form-control" id="room_name" name="room_name" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Create Room</button>
+    </form>
+</div>
+{% endblock %}

@@ -7,5 +7,25 @@
     <h2>Dashboard</h2>
     <p>Hello, {{ current_user.username }}!</p>
     <p>This is your dashboard. More features coming soon.</p>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-users"></i> Party Rooms</h5>
+                    <ul class="list-group">
+                        {% for room in rooms %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ room.name }}
+                                <a href="{{ url_for('join_room', room_id=room.id) }}" class="btn btn-primary btn-sm">Join</a>
+                            </li>
+                        {% else %}
+                            <li class="list-group-item">No rooms available.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
