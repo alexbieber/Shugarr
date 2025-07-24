@@ -3,32 +3,130 @@
 {% block title %}Edit Profile{% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container mt-4">
     <h2>Edit Profile</h2>
+    <!-- BACKEND_INTEGRATION:
+        GET Request:
+        - Populate form fields with current_user's existing data.
+          Example in route: form.about_me.data = current_user.about_me
+        POST Request:
+        - Validate submitted data using EditProfileForm (WTForms) on the backend.
+        - If valid:
+            - Update user's profile attributes in the database (e.g., current_user.username = form.username.data).
+            - Commit changes to the database.
+            - Flash a success message.
+            - Redirect to the user's profile page (url_for('profile')).
+        - If invalid:
+            - Re-render this template, passing the form object with validation errors.
+            WTForms will automatically display errors next to fields if using {{ form.field.errors }}.
+    -->
     <form method="POST" action="{{ url_for('edit_profile') }}">
-        {{ form.hidden_tag() }}
+        {{ form.hidden_tag() }} <!-- CSRF token -->
+
         <div class="form-group">
-            {{ form.username.label }}
-            {{ form.username(class="form-control", readonly=True) }} {# Make sure it's readonly here too #}
+            {{ form.username.label(class="form-control-label") }}
+            {{ form.username(class="form-control", id="username") }}
             {% if form.username.errors %}
-                <ul class="errors">
-                    {% for error in form.username.errors %}<li>{{ error }}</li>{% endfor %}
-                </ul>
+                <div class="alert alert-danger mt-2">
+                    {% for error in form.username.errors %}
+                        <span>{{ error }}</span><br>
+                    {% endfor %}
+                </div>
             {% endif %}
         </div>
+
         <div class="form-group">
-            {{ form.bio.label }}
-            {{ form.bio(class="form-control", rows=5) }}
-            {% if form.bio.errors %}
-                <ul class="errors">
-                    {% for error in form.bio.errors %}<li>{{ error }}</li>{% endfor %}
-                </ul>
+            {{ form.email.label(class="form-control-label") }}
+            {{ form.email(class="form-control", id="email") }}
+            {% if form.email.errors %}
+                <div class="alert alert-danger mt-2">
+                    {% for error in form.email.errors %}
+                        <span>{{ error }}</span><br>
+                    {% endfor %}
+                </div>
             {% endif %}
         </div>
+
         <div class="form-group">
-            {{ form.submit(class="btn btn-primary") }}
+            {{ form.about_me.label(class="form-control-label") }}
+            {{ form.about_me(class="form-control", rows="3", id="about_me", maxlength="140") }}
+            {% if form.about_me.errors %}
+                <div class="alert alert-danger mt-2">
+                    {% for error in form.about_me.errors %}
+                        <span>{{ error }}</span><br>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.age.label(class="form-control-label") }}
+            <!-- BACKEND_INTEGRATION: Populate current value from user object if available -->
+            {{ form.age(class="form-control", type="number", id="age") }}
+            {% if form.age.errors %}
+                <div class="alert alert-danger mt-2">
+                    {% for error in form.age.errors %}
+                        <span>{{ error }}</span><br>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.location.label(class="form-control-label") }}
+            <!-- BACKEND_INTEGRATION: Populate current value from user object if available -->
+            {{ form.location(class="form-control", id="location") }}
+            {% if form.location.errors %}
+                <div class="alert alert-danger mt-2">
+                    {% for error in form.location.errors %}
+                        <span>{{ error }}</span><br>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.interests.label(class="form-control-label") }}
+            <!-- BACKEND_INTEGRATION: Populate current value from user object if available -->
+            {{ form.interests(class="form-control", id="interests", maxlength="200") }}
+            {% if form.interests.errors %}
+                <div class="alert alert-danger mt-2">
+                    {% for error in form.interests.errors %}
+                        <span>{{ error }}</span><br>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.profile_picture_url.label(class="form-control-label") }}
+            <!-- BACKEND_INTEGRATION: Populate current value from user object if available -->
+            {{ form.profile_picture_url(class="form-control", id="profile_picture_url") }}
+            {% if form.profile_picture_url.errors %}
+                <div class="alert alert-danger mt-2">
+                    {% for error in form.profile_picture_url.errors %}
+                        <span>{{ error }}</span><br>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- BACKEND_INTEGRATION: Add fields for additional photo URLs if implementing gallery uploads -->
+        <!-- For now, this is a placeholder - Section commented out for simplicity
+        <div class="form-group">
+            <label class="form-control-label">Additional Photo URLs (Comma-separated)</label>
+            <input type="text" name="additional_photo_urls" class="form-control">
+            <small class="form-text text-muted">Mock field: Actual implementation requires backend logic.</small>
+        </div>
+        -->
+
+        <div class="form-group mt-4">
+            {{ form.submit(class="btn btn-primary btn-lg") }}
         </div>
     </form>
-    <p><a href="{{ url_for('profile') }}">Cancel and View Profile</a></p>
 </div>
+{% endblock %}
+
+{% block scripts_extra %}
+    <script src="{{ url_for('static', filename='js/edit_profile.js') }}"></script>
 {% endblock %}
