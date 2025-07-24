@@ -1,46 +1,76 @@
 {% extends "base.html" %}
 
-{% block title %}{{ user.username }}'s Profile{% endblock %}
+{% block title %}User Profile{% endblock %}
 
 {% block content %}
-<div class="container profile-container">
-    <h2>{{ user.username }}</h2>
+<div class="container mt-4">
+    <!-- BACKEND_INTEGRATION:
+        The 'user' object in this template should be populated by the backend route.
+        It should contain attributes like:
+        - user.username
+        - user.email
+        - user.about_me
+        - user.age
+        - user.location
+        - user.interests
+        - user.profile_picture_url (URL to the user's profile image)
+        - user.photos (a list of objects/URLs for the photo gallery, e.g., [{url: '...', alt: '...'}, ...])
+    -->
+    <div class="row">
+        <div class="col-md-4">
+            <!-- Profile Picture -->
+            <div class="profile-picture-container mb-3">
+                <img src="{{ user.profile_picture_url or url_for('static', filename='images/default_profile.png') }}"
+                     alt="Profile Picture for {{ user.username or 'User' }}"
+                     class="img-fluid rounded-circle profile-picture">
+            </div>
+            <a href="{{ url_for('edit_profile') }}" class="btn btn-primary btn-block"><i class="fas fa-edit"></i> Edit Profile</a>
+        </div>
+        <div class="col-md-8">
+            <!-- User Information -->
+            <div class="profile-info">
+                <h2>{{ user.username or 'N/A' }}</h2>
+                <p class="text-muted">{{ user.email or 'N/A' }}</p>
 
-    <div class="profile-info">
-        <p><strong>Email:</strong> {{ user.email }}</p>
-        <p><strong>Bio:</strong></p>
-        <div class="bio-text">
-            {{ user.bio if user.bio else "No bio yet." }}
+                <div class="profile-section mt-3 card p-3"> <!-- Added card and padding -->
+                    <h4 class="profile-section-title">About Me</h4>
+                    <p>{{ user.about_me or 'Not specified.' }}</p>
+                </div>
+
+                <div class="profile-section mt-3 card p-3"> <!-- Added card and padding -->
+                    <h4 class="profile-section-title">Details</h4>
+                    <ul class="list-unstyled">
+                        <li><strong>Age:</strong> {{ user.age or 'N/A' }}</li>
+                        <li><strong>Location:</strong> {{ user.location or 'N/A' }}</li>
+                        <li><strong>Interests:</strong> {{ user.interests or 'N/A' }}</li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 
-    {% if current_user == user %}
-        <a href="{{ url_for('edit_profile') }}" class="btn btn-primary">Edit Profile</a>
-    {% endif %}
-    {# Add a link to go back to users list or home #}
-    <p><a href="{{ url_for('users') }}">Back to Users List</a></p>
+    <!-- Photo Gallery (Mocked) -->
+    <div class="mt-4 profile-gallery card p-3"> <!-- Added card and padding, adjusted margin -->
+        <h3 class="profile-section-title">Photo Gallery</h3>
+        <!-- BACKEND_INTEGRATION: Populate this gallery by iterating over user.photos (a list of photo URLs or objects).
+             Example: {% for photo in user.photos %} <img src="{{ photo.url }}" alt="{{ photo.alt_text }}"> {% endfor %}
+             If user.photos is empty, display a message like "No photos yet."
+        -->
+        <div class="row">
+            <div class="col-md-3 mb-3">
+                <img src="https://via.placeholder.com/150/007bff/ffffff?Text=Photo+1" alt="Gallery Photo 1" class="img-fluid rounded">
+            </div>
+            <div class="col-md-3 mb-3">
+                <img src="https://via.placeholder.com/150/FF0000/FFFFFF?Text=Photo+2" alt="Gallery Photo 2" class="img-fluid rounded">
+            </div>
+            <div class="col-md-3 mb-3">
+                <img src="https://via.placeholder.com/150/FFFF00/000000?Text=Photo+3" alt="Gallery Photo 3" class="img-fluid rounded">
+            </div>
+            <div class="col-md-3 mb-3">
+                <img src="https://via.placeholder.com/150/00FF00/000000?Text=Photo+4" alt="Gallery Photo 4" class="img-fluid rounded">
+            </div>
+        </div>
+        <p class="text-muted"><small><em>Gallery is currently mocked. Backend integration needed.</em></small></p>
+    </div>
 </div>
-
-<style>
-    .profile-container { max-width: 700px; }
-    .profile-info { margin-bottom: 20px; }
-    .bio-text {
-        background-color: #f9f9f9;
-        border: 1px solid #eee;
-        padding: 10px;
-        border-radius: 4px;
-        min-height: 50px;
-        white-space: pre-wrap; /* Respects newlines and spaces in the bio */
-    }
-    .btn.btn-primary {
-        display: inline-block;
-        margin-top: 10px;
-        background-color: #007bff;
-        color: white;
-        padding: 10px 15px;
-        text-decoration: none;
-        border-radius: 4px;
-    }
-    .btn.btn-primary:hover { background-color: #0056b3; }
-</style>
 {% endblock %}
