@@ -25,6 +25,25 @@
                      class="img-fluid rounded-circle profile-picture">
             </div>
             <a href="{{ url_for('edit_profile') }}" class="btn btn-primary btn-block"><i class="fas fa-edit"></i> Edit Profile</a>
+            {% if user == current_user %}
+                <a href="{{ url_for('buy_coins') }}" class="btn btn-success btn-block mt-2"><i class="fas fa-coins"></i> Buy Coins</a>
+            {% else %}
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Send a Gift</h5>
+                        <form method="POST" action="{{ url_for('send_gift', recipient_id=user.id) }}">
+                            <div class="form-group">
+                                <select class="form-control" id="gift_id" name="gift_id">
+                                    {% for gift in gifts %}
+                                        <option value="{{ gift.id }}">{{ gift.name }} ({{ gift.cost }} coins)</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Send</button>
+                        </form>
+                    </div>
+                </div>
+            {% endif %}
         </div>
         <div class="col-md-8">
             <!-- User Information -->

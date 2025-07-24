@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Buy Coins</h2>
+    <form method="POST">
+        <div class="form-group">
+            <label for="amount">Amount</label>
+            <input type="number" class="form-control" id="amount" name="amount" min="1" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Buy</button>
+    </form>
+</div>
+{% endblock %}

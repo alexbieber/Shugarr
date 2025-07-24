@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>{{ title }}</h2>
+    <p>Welcome to the room!</p>
+
+    <h3>Users in this room:</h3>
+    <ul>
+        {% for user in room.users %}
+        <li>
+            {{ user.username }}
+            {% if current_user == room.owner %}
+                <a href="#" class="btn btn-warning btn-sm">Mute</a>
+                <a href="#" class="btn btn-danger btn-sm">Kick</a>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+
+    <div id="videos"></div>
+
+    <a href="{{ url_for('leave_room', room_id=room.id) }}" class="btn btn-danger">Leave Room</a>
+</div>
+{% endblock %}
+
+{% block scripts_extra %}
+<script src="https://cdn.jsdelivr.net/npm/simple-peer@9.11.1/simplepeer.min.js"></script>
+<script>
+    const socket = io();
+    const videos = document.getElementById('videos');
+    const peers = {};
+
+    navigator.mediaDevices.getUserMedia({ video: false, audio: true })
+        .then(stream => {
+            socket.emit('join-room', '{{ room.id }}', '{{ current_user.id }}');
+
+            socket.on('user-connected', userId => {
+                const peer = new SimplePeer({ initiator: true, trickle: false, stream });
+                peer.on('signal', signal => {
+                    socket.emit('signal', userId, signal);
+                });
+                peers[userId] = peer;
+            });
+
+            socket.on('signal', (userId, signal) => {
+                if (!peers[userId]) {
+                    const peer = new SimplePeer({ initiator: false, trickle: false, stream });
+                    peer.on('signal', newSignal => {
+                        socket.emit('signal', userId, newSignal);
+                    });
+                    peers[userId] = peer;
+                }
+                peers[userId].signal(signal);
+            });
+
+            socket.on('user-disconnected', userId => {
+                if (peers[userId]) {
+                    peers[userId].destroy();
+                    delete peers[userId];
+                }
+            });
+
+            socket.on('user-joined', (userId, stream) => {
+                const video = document.createElement('video');
+                video.srcObject = stream;
+                video.addEventListener('loadedmetadata', () => {
+                    video.play();
+                });
+                videos.append(video);
+            });
+        });
+</script>
+{% endblock %}
